@@ -10,7 +10,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER
 )
 set(${PROJECT_NAME}_HEADER_FILES
     "duplicate_foreach.h"
-    #"type_traits.hpp"
+    "type_traits.hpp"
 
     "attrib/current_arch.h"
     "attrib/expand.h"
