@@ -18,7 +18,10 @@ set(${PROJECT_NAME}_HEADER_FILES
     "attrib/target_clones.h"
     "attrib/target.h"
 
-    #"impl/"
+    "impl/basic_vector.hpp"
+
+    #"impl/scalar.hpp"
+    #"impl/scalar.inl"
 
     #"algo/"
 )
@@ -29,7 +32,7 @@ target_sources(${PROJECT_NAME} PUBLIC FILE_SET ${PROJECT_NAME}_HEADERS TYPE HEAD
 ### include directory ###
 cmake_path(SET SELF_INC_CMAKE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 file(TO_NATIVE_PATH "${SELF_INC_CMAKE_DIR}" SELF_INC_DIR)
-target_include_directories(${PROJECT_NAME} BEFORE INTERFACE "${SELF_INC_DIR}")
+target_include_directories(${PROJECT_NAME} SYSTEM BEFORE INTERFACE "${SELF_INC_DIR}")
 message(STATUS "Including self directory: ${SELF_INC_DIR}")
 
 
