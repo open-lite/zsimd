@@ -97,7 +97,7 @@
 /** Scalar **/
 #undef ZSIMD_ARCH
 #undef ZSIMD_ARCH_TARGET
-#include "expand.h"
+#include __ZSIMD_EXPAND_FILE
 
 
 #undef __ZSIMD_DUPLICATE
