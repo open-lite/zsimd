@@ -17,6 +17,7 @@ set(${PROJECT_NAME}_HEADER_FILES
     "attrib/flatten.h"
     "attrib/target_clones.h"
     "attrib/target.h"
+    "attrib/align.h"
 
     "impl/basic_vector.hpp"
 
