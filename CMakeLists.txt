@@ -21,8 +21,7 @@ set(${PROJECT_NAME}_HEADER_FILES
 
     "impl/basic_vector.hpp"
 
-    #"impl/scalar.hpp"
-    #"impl/scalar.inl"
+    "impl/scalar.hpp"
 
     #"algo/"
 )
