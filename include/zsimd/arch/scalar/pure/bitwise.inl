@@ -1,9 +1,9 @@
 #pragma once
-#include "zsimd/impl/scalar.hpp"
+#include "zsimd/arch/scalar.hpp"
 
 #include <cmath>
 #include <type_traits>
-#include "zsimd/impl/scalar/pure/bitwise_impl.inl"
+#include "zsimd/arch/scalar/pure/bitwise_impl.inl"
 
 #if __cpp_lib_bitops >= 201907L
 #define __ZSIMD_BITOPS 1

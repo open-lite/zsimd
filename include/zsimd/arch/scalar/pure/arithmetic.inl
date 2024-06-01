@@ -1,7 +1,7 @@
 #pragma once
-#include "zsimd/impl/scalar.hpp"
+#include "zsimd/arch/scalar.hpp"
 
-#include "zsimd/impl/scalar/pure/arithmetic_impl.inl"
+#include "zsimd/arch/scalar/pure/arithmetic_impl.inl"
 #include <algorithm>
 
 

@@ -2,7 +2,7 @@
 
 #if !defined(__ZSIMD_STRINGIFY) || !defined(__ZSIMD_INCLUDE)
 #define __ZSIMD_STRINGIFY(x) #x
-#define __ZSIMD_INCLUDE(file) __ZSIMD_STRINGIFY(zsimd/impl/file.hpp)
+#define __ZSIMD_INCLUDE(file) __ZSIMD_STRINGIFY(zsimd/arch/file.hpp)
 #endif
 
 #ifndef ZSIMD_ARCH

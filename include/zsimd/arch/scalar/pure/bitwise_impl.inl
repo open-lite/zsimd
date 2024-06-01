@@ -1,5 +1,5 @@
 #pragma once
-#include "zsimd/impl/scalar.hpp"
+#include "zsimd/arch/scalar.hpp"
 
 
 #if defined __has_builtin

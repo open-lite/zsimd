@@ -3,8 +3,8 @@
 #include <cstddef>
 #include <climits>
 #include <type_traits>
-#include "zsimd/type_traits.hpp"
-#include "zsimd/impl/basic_vector.hpp"
+#include "zsimd/types/type_traits.hpp"
+#include "zsimd/types/basic_vector.hpp"
 
 #if __cpp_constexpr >= 201304L
 #define ZSIMD_TARGET_SCALAR_CPP14 constexpr 
@@ -579,15 +579,15 @@ namespace zsimd {
     };
 }
 
-#include "zsimd/impl/scalar/data_transfer.inl"
-#include "zsimd/impl/scalar/arithmetic.inl"
-#include "zsimd/impl/scalar/math.inl"
-#include "zsimd/impl/scalar/comparison.inl"
-#include "zsimd/impl/scalar/bitwise.inl"
+#include "zsimd/arch/scalar/data_transfer.inl"
+#include "zsimd/arch/scalar/arithmetic.inl"
+#include "zsimd/arch/scalar/math.inl"
+#include "zsimd/arch/scalar/comparison.inl"
+#include "zsimd/arch/scalar/bitwise.inl"
 
-#include "zsimd/impl/scalar/pure/arithmetic.inl"
-#include "zsimd/impl/scalar/pure/math.inl"
-#include "zsimd/impl/scalar/pure/comparison.inl"
-#include "zsimd/impl/scalar/pure/bitwise.inl"
+#include "zsimd/arch/scalar/pure/arithmetic.inl"
+#include "zsimd/arch/scalar/pure/math.inl"
+#include "zsimd/arch/scalar/pure/comparison.inl"
+#include "zsimd/arch/scalar/pure/bitwise.inl"
 
-#include "zsimd/impl/scalar/per_slot.inl"
+#include "zsimd/arch/scalar/per_slot.inl"

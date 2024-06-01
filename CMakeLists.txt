@@ -10,7 +10,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER
 )
 set(${PROJECT_NAME}_HEADER_FILES
     "duplicate_foreach.h"
-    "type_traits.hpp"
 
     "attrib/current_arch.h"
     "attrib/expand.h"
@@ -19,24 +18,24 @@ set(${PROJECT_NAME}_HEADER_FILES
     "attrib/target.h"
     "attrib/align.h"
 
-    "impl/basic_vector.hpp"
+    "types/basic_vector.hpp"
+    "types/type_traits.hpp"
 
-    "impl/scalar.hpp"
-    "impl/scalar/data_transfer.inl"
-    "impl/scalar/arithmetic.inl"
-    "impl/scalar/math.inl"
-    "impl/scalar/comparison.inl"
-    "impl/scalar/bitwise.inl"
-    "impl/scalar/per_slot.inl"
-    "impl/scalar/pure/arithmetic.inl"
-    "impl/scalar/pure/arithmetic_impl.inl"
-    "impl/scalar/pure/math.inl"
-    "impl/scalar/pure/comparison.inl"
-    "impl/scalar/pure/bitwise.inl"
-    "impl/scalar/pure/bitwise_impl.inl"
-
-    #"algo/"
+    "arch/scalar.hpp"
+    "arch/scalar/data_transfer.inl"
+    "arch/scalar/arithmetic.inl"
+    "arch/scalar/math.inl"
+    "arch/scalar/comparison.inl"
+    "arch/scalar/bitwise.inl"
+    "arch/scalar/per_slot.inl"
+    "arch/scalar/pure/arithmetic.inl"
+    "arch/scalar/pure/arithmetic_impl.inl"
+    "arch/scalar/pure/math.inl"
+    "arch/scalar/pure/comparison.inl"
+    "arch/scalar/pure/bitwise.inl"
+    "arch/scalar/pure/bitwise_impl.inl"
 )
+
 list(TRANSFORM ${PROJECT_NAME}_HEADER_FILES PREPEND "include/zsimd/")
 target_sources(${PROJECT_NAME} PUBLIC FILE_SET ${PROJECT_NAME}_HEADERS TYPE HEADERS BASE_DIRS "include" FILES ${${PROJECT_NAME}_HEADER_FILES})
 
