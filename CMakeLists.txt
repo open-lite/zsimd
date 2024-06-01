@@ -22,6 +22,18 @@ set(${PROJECT_NAME}_HEADER_FILES
     "impl/basic_vector.hpp"
 
     "impl/scalar.hpp"
+    "impl/scalar/data_transfer.inl"
+    "impl/scalar/arithmetic.inl"
+    "impl/scalar/math.inl"
+    "impl/scalar/comparison.inl"
+    "impl/scalar/bitwise.inl"
+    "impl/scalar/per_slot.inl"
+    "impl/scalar/pure/arithmetic.inl"
+    "impl/scalar/pure/arithmetic_impl.inl"
+    "impl/scalar/pure/math.inl"
+    "impl/scalar/pure/comparison.inl"
+    "impl/scalar/pure/bitwise.inl"
+    "impl/scalar/pure/bitwise_impl.inl"
 
     #"algo/"
 )
