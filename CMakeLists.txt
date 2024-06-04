@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_library(${PROJECT_NAME} INTERFACE)
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER 
-    "include/zsimd.hpp"
+    "include/${PROJECT_NAME}.hpp"
 )
 set(${PROJECT_NAME}_HEADER_FILES
     "duplicate_foreach.h"
@@ -36,7 +36,7 @@ set(${PROJECT_NAME}_HEADER_FILES
     "arch/scalar/pure/bitwise_impl.inl"
 )
 
-list(TRANSFORM ${PROJECT_NAME}_HEADER_FILES PREPEND "include/zsimd/")
+list(TRANSFORM ${PROJECT_NAME}_HEADER_FILES PREPEND "include/${PROJECT_NAME}/")
 target_sources(${PROJECT_NAME} PUBLIC FILE_SET ${PROJECT_NAME}_HEADERS TYPE HEADERS BASE_DIRS "include" FILES ${${PROJECT_NAME}_HEADER_FILES})
 
 
