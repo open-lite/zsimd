@@ -18,7 +18,7 @@ set(${PROJECT_NAME}_HEADER_FILES
     "attrib/target.h"
     "attrib/align.h"
 
-    "types/basic_vector.hpp"
+    "types/generic_vector.hpp"
     "types/type_traits.hpp"
 
     "arch/scalar.hpp"

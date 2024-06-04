@@ -3,177 +3,177 @@
 
 
 namespace zsimd {
-    template<typename T> ZSIMD_TARGET_SCALAR_CPP14
-    scalar::vector<T> scalar::abs(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::abs, v);    
+    template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14
+    scalar::basic_vector<T, B> scalar::abs(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::abs, v);    
     }
 }
 
 
 namespace zsimd {
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::expe (scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::expe, v);        
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::expe (scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::expe, v);        
     }
 
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::exp2 (scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::exp2, v);    
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::exp2 (scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::exp2, v);    
     }
 
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::exp10(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::exp10, v);    
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::exp10(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::exp10, v);    
     }
 
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::expem1(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::expem1, v);    
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::expem1(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::expem1, v);    
     }
 
 
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::ln(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::ln, v);    
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::ln(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::ln, v);    
     }
 
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::log2(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::log2, v);    
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::log2(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::log2, v);    
     }
 
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::log10(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::log10, v);    
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::log10(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::log10, v);    
     }
 
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::ln1p(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::ln1p, v);    
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::ln1p(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::ln1p, v);    
     }
 }
 
 
 namespace zsimd {
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::pow(scalar::vector<T> base, scalar::vector<T> exp) noexcept {
-        return scalar::per_slot<T>(scalar::pow, base, exp);    
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::pow(scalar::basic_vector<T, B> base, scalar::basic_vector<T, B> exp) noexcept {
+        return scalar::per_slot<T, B>(scalar::pow, base, exp);    
     }
 
     
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::rsqrt(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::rsqrt, v);    
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::rsqrt(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::rsqrt, v);    
     }
 
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::sqrt(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::sqrt, v);    
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::sqrt(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::sqrt, v);    
     }
 
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::cbrt(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::cbrt, v);    
-    }
-
-
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::hypot(scalar::vector<T> a, scalar::vector<T> b) noexcept {
-        return scalar::per_slot<T>(scalar::hypot, a, b);    
-    }
-}
-
-
-namespace zsimd {
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::sin(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::sin, v);    
-    }
-
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::cos(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::cos, v);    
-    }
-
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::tan(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::tan, v);    
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::cbrt(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::cbrt, v);    
     }
 
 
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::arcsin(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::arcsin, v);    
-    }
-
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::arccos(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::arccos, v);    
-    }
-
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::arctan(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::arctan, v);    
-    }
-
-
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::sinh(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::sinh, v);    
-    }
-
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::cosh(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::cosh, v);    
-    }
-
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::tanh(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::tanh, v);    
-    }
-
-
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::arcsinh(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::arcsinh, v);    
-    }
-
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::arccosh(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::arccosh, v);    
-    }
-
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::arctanh(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::arctanh, v);    
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::hypot(scalar::basic_vector<T, B> a, scalar::basic_vector<T, B> b) noexcept {
+        return scalar::per_slot<T, B>(scalar::hypot, a, b);    
     }
 }
 
 
 namespace zsimd {
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::half_to_even(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::half_to_even, v);    
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::sin(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::sin, v);    
     }
 
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::half_to_inf(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::half_to_inf, v);    
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::cos(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::cos, v);    
     }
 
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::floor(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::floor, v);    
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::tan(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::tan, v);    
     }
 
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::ceil(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::ceil, v);    
+
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::arcsin(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::arcsin, v);    
     }
 
-    template<typename T, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
-    scalar::vector<T> scalar::truncate(scalar::vector<T> v) noexcept {
-        return scalar::per_slot<T>(scalar::truncate, v);    
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::arccos(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::arccos, v);    
+    }
+
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::arctan(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::arctan, v);    
+    }
+
+
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::sinh(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::sinh, v);    
+    }
+
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::cosh(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::cosh, v);    
+    }
+
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::tanh(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::tanh, v);    
+    }
+
+
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::arcsinh(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::arcsinh, v);    
+    }
+
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::arccosh(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::arccosh, v);    
+    }
+
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::arctanh(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::arctanh, v);    
+    }
+}
+
+
+namespace zsimd {
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::half_to_even(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::half_to_even, v);    
+    }
+
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::half_to_inf(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::half_to_inf, v);    
+    }
+
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::floor(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::floor, v);    
+    }
+
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::ceil(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::ceil, v);    
+    }
+
+    template<typename T, std::size_t B, enable_if<T, traits::floating>> ZSIMD_TARGET_SCALAR_MATH
+    scalar::basic_vector<T, B> scalar::truncate(scalar::basic_vector<T, B> v) noexcept {
+        return scalar::per_slot<T, B>(scalar::truncate, v);    
     }
 
 }

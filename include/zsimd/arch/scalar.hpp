@@ -4,7 +4,7 @@
 #include <climits>
 #include <type_traits>
 #include "zsimd/types/type_traits.hpp"
-#include "zsimd/types/basic_vector.hpp"
+#include "zsimd/types/generic_vector.hpp"
 
 #if __cpp_constexpr >= 201304L
 #define ZSIMD_TARGET_SCALAR_CPP14 constexpr 
@@ -29,244 +29,252 @@
 
 namespace zsimd {
     struct scalar {
-    private:
+        template<typename T, std::size_t B>
+        using basic_vector = generic_vector<T, B, scalar, T, T, T>;
+
         constexpr static std::size_t native_bits = 64;
+        template<typename T>
+        using vector = basic_vector<T, native_bits>;
 
         template<typename T>
-        using native_type = T[(native_bits/CHAR_BIT)/sizeof(T)];
-
-    public:
+        using vector128 = basic_vector<T, 128>;
         template<typename T>
-        using vector = basic_vector<T, scalar, native_type<T>, native_type<T>, native_type<T>>;
-        //template<typename T>
-        //using vector_bool = vector<T, true>; 
-
+        using vector256 = basic_vector<T, 256>;
         template<typename T>
-        using mask = typename vector<T>::mask_type;
+        using vector512 = basic_vector<T, 512>;
+
+
+        template<typename T, std::size_t B>
+        using basic_mask = typename basic_vector<T, B>::mask_type;
         //alignas on type alias is a GCC-only extension; clang does not support it.
+        template<typename T, std::size_t B>
+        using basic_array  /*alignas(basic_vector<T, B>::data_size)*/ = typename basic_vector<T, B>::array_type;
+        template<typename T, std::size_t B>
+        using basic_bitset /*alignas(basic_vector<T, B>::data_size)*/ = typename basic_vector<T, B>::bitset_type;
+
         template<typename T>
-        using array  /*alignas(vector<T>::data_size)*/ = typename vector<T>::array_type;
+        using mask   = basic_mask<T, native_bits>;
         template<typename T>
-        using bitset /*alignas(vector<T>::data_size)*/ = typename vector<T>::bitset_type;
-        
-        static_assert(std::is_same<typename array<int>::pointer, typename std::decay<native_type<int>>::type>::value && sizeof(array<int>) == native_bits/CHAR_BIT);
+        using array  = basic_array<T, native_bits>;
+        template<typename T>
+        using bitset = basic_bitset<T, native_bits>;
 
 
     public:
         /* Data transfer */
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> loadu(T const* const data) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> ploadu(T const* const data, std::size_t remaining_len) noexcept; //iloadu
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> loada(T const* const data) noexcept;
+        template<typename T, std::size_t B = native_bits> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> loadu(T const* const data) noexcept;
+        template<typename T, std::size_t B = native_bits> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> ploadu(T const* const data, std::size_t remaining_len) noexcept; //iloadu
+        template<typename T, std::size_t B = native_bits> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> loada(T const* const data) noexcept;
 
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> broadcast(T val) noexcept;
+        template<typename T, std::size_t B = native_bits> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> broadcast(T val) noexcept;
 
-        template<typename T> ZSIMD_TARGET_SCALAR static
-        vector<T> all_zeros() noexcept;
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> all_ones() noexcept;
+        template<typename T, std::size_t B = native_bits> ZSIMD_TARGET_SCALAR static
+        basic_vector<T, B> all_zeros() noexcept;
+        template<typename T, std::size_t B = native_bits, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> all_ones() noexcept;
         
 
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        array<T> store(vector<T> v) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_array<T, B> store(basic_vector<T, B> v) noexcept;
 
 
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        array<T> to_array(vector<T> v) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_array<T, B> to_array(basic_vector<T, B> v) noexcept;
 
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        mask<T> to_mask(vector<T> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_mask<T, B> to_mask(basic_vector<T, B> v) noexcept;
 
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        bitset<T> to_bitset(vector<T> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_bitset<T, B> to_bitset(basic_vector<T, B> v) noexcept;
 
         
-        template<typename To, typename From> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<To> type_cast(vector<From> v) noexcept;
+        template<typename To, typename From, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<To, B> type_cast(basic_vector<From, B> v) noexcept;
 
-        template<typename To, typename From, enable_if_2<To, From, traits::same_size> = true> ZSIMD_TARGET_SCALAR_CPP20 static
-        vector<To> bit_cast (vector<From> v) noexcept;
+        template<typename To, typename From, std::size_t B, enable_if_2<To, From, traits::same_size> = true> ZSIMD_TARGET_SCALAR_CPP20 static
+        basic_vector<To, B> bit_cast (basic_vector<From, B> v) noexcept;
         
-        //template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        //vector<cond<T>> bool_cast(vector<T> v) noexcept;
+        //template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        //vector<cond<T>> bool_cast(basic_vector<T, B> v) noexcept;
 
 
-        template<typename T> ZSIMD_TARGET_SCALAR static
-        mask<T> left_mask(std::size_t idx) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR static
-        mask<T> right_mask(std::size_t idx) noexcept;
+        template<typename T, std::size_t B = native_bits> ZSIMD_TARGET_SCALAR static
+        basic_mask<T, B> left_mask(std::size_t idx) noexcept;
+        template<typename T, std::size_t B = native_bits> ZSIMD_TARGET_SCALAR static
+        basic_mask<T, B> right_mask(std::size_t idx) noexcept;
 
 
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> slot_shiftl(vector<T> v, std::size_t n_slots) noexcept;
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> slot_shiftr(vector<T> v, std::size_t n_slots) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> slot_shiftl(basic_vector<T, B> v, std::size_t n_slots) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> slot_shiftr(basic_vector<T, B> v, std::size_t n_slots) noexcept;
 
 
 
         /* Arithmetic */
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> add(vector<T> a, vector<T> b) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> sub(vector<T> a, vector<T> b) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> mul(vector<T> a, vector<T> b) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> div(vector<T> a, vector<T> b) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> mod(vector<T> a, vector<T> b) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> rem(vector<T> a, vector<T> b) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> add(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> sub(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> mul(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> div(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> mod(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> rem(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
         
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> positive(vector<T> v) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> negative(vector<T> v) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> positive(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> negative(basic_vector<T, B> v) noexcept;
 
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> reciprocal(vector<T> v) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> reciprocal(basic_vector<T, B> v) noexcept;
 
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> decr(vector<T> v) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> incr(vector<T> v) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> decr(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> incr(basic_vector<T, B> v) noexcept;
 
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> min(vector<T> a, vector<T> b) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> max(vector<T> a, vector<T> b) noexcept;
-
-
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> add_s(vector<T> a, vector<T> b) noexcept;
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> sub_s(vector<T> a, vector<T> b) noexcept;
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> mul_s(vector<T> a, vector<T> b) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> min(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> max(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
 
 
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> fma(vector<T> a, vector<T> b, vector<T> c) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> fms(vector<T> a, vector<T> b, vector<T> c) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> fnma(vector<T> a, vector<T> b, vector<T> c) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> fnms(vector<T> a, vector<T> b, vector<T> c) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> add_s(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> sub_s(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> mul_s(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
 
 
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> logical_and(vector<T> a, vector<T> b) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> logical_or (vector<T> a, vector<T> b) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> fma(basic_vector<T, B> a, basic_vector<T, B> b, basic_vector<T, B> c) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> fms(basic_vector<T, B> a, basic_vector<T, B> b, basic_vector<T, B> c) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> fnma(basic_vector<T, B> a, basic_vector<T, B> b, basic_vector<T, B> c) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> fnms(basic_vector<T, B> a, basic_vector<T, B> b, basic_vector<T, B> c) noexcept;
+
+
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> logical_and(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> logical_or (basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
         
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> logical_not(vector<T> v) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> logical_not(basic_vector<T, B> v) noexcept;
 
 
 
         /* Mathematical */
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> abs(vector<T> v) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> abs(basic_vector<T, B> v) noexcept;
 
 
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> expe (vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> exp2 (vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> exp10(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> expem1(vector<T> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> expe (basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> exp2 (basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> exp10(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> expem1(basic_vector<T, B> v) noexcept;
 
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> ln(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> log2(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> log10(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> ln1p(vector<T> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> ln(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> log2(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> log10(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> ln1p(basic_vector<T, B> v) noexcept;
 
 
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> pow(vector<T> base, vector<T> exp) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> pow(basic_vector<T, B> base, basic_vector<T, B> exp) noexcept;
         
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> rsqrt(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> sqrt(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> cbrt(vector<T> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> rsqrt(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> sqrt(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> cbrt(basic_vector<T, B> v) noexcept;
 
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> hypot(vector<T> a, vector<T> b) noexcept;
-
-
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> sin(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> cos(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> tan(vector<T> v) noexcept;
-
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> arcsin(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> arccos(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> arctan(vector<T> v) noexcept;
-
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> sinh(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> cosh(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> tanh(vector<T> v) noexcept;
-
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> arcsinh(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> arccosh(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> arctanh(vector<T> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> hypot(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
 
 
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> half_to_even(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> half_to_inf(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> floor(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> ceil(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
-        vector<T> truncate(vector<T> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> sin(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> cos(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> tan(basic_vector<T, B> v) noexcept;
+
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> arcsin(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> arccos(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> arctan(basic_vector<T, B> v) noexcept;
+
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> sinh(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> cosh(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> tanh(basic_vector<T, B> v) noexcept;
+
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> arcsinh(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> arccosh(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> arctanh(basic_vector<T, B> v) noexcept;
+
+
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> half_to_even(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> half_to_inf(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> floor(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> ceil(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::floating> = true> ZSIMD_TARGET_SCALAR_MATH static
+        basic_vector<T, B> truncate(basic_vector<T, B> v) noexcept;
 
 
 
         /* Comparison */
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> eq (vector<T> a, vector<T> b) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> neq(vector<T> a, vector<T> b) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> gt (vector<T> a, vector<T> b) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> lt (vector<T> a, vector<T> b) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> geq(vector<T> a, vector<T> b) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> leq(vector<T> a, vector<T> b) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> eq (basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> neq(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> gt (basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> lt (basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> geq(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> leq(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
 
 
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> is_even(vector<T> v) noexcept;
-        template<typename T> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> is_odd (vector<T> v) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> is_even(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> is_odd (basic_vector<T, B> v) noexcept;
 
 
 
@@ -275,56 +283,56 @@ namespace zsimd {
         //vector<To> bit_cast (vector<From> v) noexcept;
 
 
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> bit_shiftl(vector<T> v, int shift) noexcept;
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> bit_shiftr(vector<T> v, int shift) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> bit_shiftl(basic_vector<T, B> v, int shift) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> bit_shiftr(basic_vector<T, B> v, int shift) noexcept;
 
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> bit_shiftr_a(vector<T> v, int shift) noexcept;
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> bit_shiftr_l(vector<T> v, int shift) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> bit_shiftr_a(basic_vector<T, B> v, int shift) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> bit_shiftr_l(basic_vector<T, B> v, int shift) noexcept;
         
 
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> bitwise_not(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> bitwise_and(vector<T> a, vector<T> b) noexcept;
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> bitwise_or (vector<T> a, vector<T> b) noexcept;
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> bitwise_xor(vector<T> a, vector<T> b) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> bitwise_not(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> bitwise_and(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> bitwise_or (basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> bitwise_xor(basic_vector<T, B> a, basic_vector<T, B> b) noexcept;
 
 
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> is_ones (vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> is_zeros(vector<T> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> is_ones (basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> is_zeros(basic_vector<T, B> v) noexcept;
 
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        bool is_all_ones (vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        bool is_all_zeros(vector<T> v) noexcept;
-
-
-        template<typename T, enable_if<T, traits::unsigned_num, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> rotr(vector<T> v, int shift) noexcept;
-        template<typename T, enable_if<T, traits::unsigned_num, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> rotl(vector<T> v, int shift) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        bool is_all_ones (basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        bool is_all_zeros(basic_vector<T, B> v) noexcept;
 
 
-        template<typename T, enable_if<T, traits::unsigned_num, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> countl_zero(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::unsigned_num, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> countr_zero(vector<T> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::unsigned_num, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> rotr(basic_vector<T, B> v, int shift) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::unsigned_num, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> rotl(basic_vector<T, B> v, int shift) noexcept;
 
-        template<typename T, enable_if<T, traits::unsigned_num, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> countl_one(vector<T> v) noexcept;
-        template<typename T, enable_if<T, traits::unsigned_num, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> countr_one(vector<T> v) noexcept;
 
-        template<typename T, enable_if<T, traits::unsigned_num, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> popcount(vector<T> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::unsigned_num, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> countl_zero(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::unsigned_num, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> countr_zero(basic_vector<T, B> v) noexcept;
+
+        template<typename T, std::size_t B, enable_if<T, traits::unsigned_num, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> countl_one(basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B, enable_if<T, traits::unsigned_num, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> countr_one(basic_vector<T, B> v) noexcept;
+
+        template<typename T, std::size_t B, enable_if<T, traits::unsigned_num, traits::integral> = true> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> popcount(basic_vector<T, B> v) noexcept;
 
 
 
@@ -570,12 +578,12 @@ namespace zsimd {
         template<typename T>
         struct extract<T, typename std::enable_if<!std::is_arithmetic<T>::value>::type> {
             using type = typename std::remove_reference<T>::type::value_type;
-            ZSIMD_TARGET_SCALAR static type value(T&& v, std::size_t i) noexcept { return std::forward<T>(v).native()[i]; }
+            ZSIMD_TARGET_SCALAR static type value(T&& v, std::size_t i) noexcept { return std::forward<T>(v).data()[i]; }
         };
 
         //Compiler *should* inline whatever function is being passed.
-        template<typename T, typename Ret = T, typename... Args, typename Functor = Ret(typename extract<Args>::type...)> ZSIMD_TARGET_SCALAR_CPP14 static
-        vector<T> per_slot(Functor&& func, Args&&... args);
+        template<typename T, std::size_t B, typename Ret = T, typename... Args, typename Functor = Ret(typename extract<Args>::type...)> ZSIMD_TARGET_SCALAR_CPP14 static
+        basic_vector<T, B> per_slot(Functor&& func, Args&&... args);
     };
 }
 
