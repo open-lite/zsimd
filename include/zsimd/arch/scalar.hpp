@@ -79,7 +79,9 @@ namespace zsimd {
         
 
         template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
-        basic_array<T, B> store(basic_vector<T, B> v) noexcept;
+        T* const storeu(T* const dest, basic_vector<T, B> v) noexcept;
+        template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static
+        T* const storea(T* const dest, basic_vector<T, B> v) noexcept;
 
 
         template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14 static

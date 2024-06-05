@@ -62,13 +62,17 @@ namespace zsimd {
 
 namespace zsimd {
     template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14
-    scalar::basic_array<T, B> scalar::store(scalar::basic_vector<T, B> v) noexcept {
+    T* const scalar::storeu(T* const dest, basic_vector<T, B> v) noexcept {
         //Intended to be a copy.
-        //With at least 02 optimization, this will just return
-        basic_array<T, B> ret{};
+        //With at least 02 optimization, this will compile to just two mov instructions
         for(std::size_t i = 0; i < basic_vector<T, B>::slots; ++i)
-            ret[i] = v.data()[i];
-        return ret;
+            dest[i] = v.data()[i];
+        return dest;
+    }
+
+    template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14
+    T* const scalar::storea(T* const dest, basic_vector<T, B> v) noexcept {
+        return storeu(dest, v);
     }
 }
 
@@ -76,7 +80,10 @@ namespace zsimd {
 namespace zsimd {
     template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14
     scalar::basic_array<T, B> scalar::to_array(scalar::basic_vector<T, B> v) noexcept {
-        return store(v);
+        //With at least 02 optimization, this will just return
+        scalar::basic_array<T, B> ret;
+        storea(ret.data(), v);
+        return ret;
     }
 
     template<typename T, std::size_t B, enable_if<T, traits::integral>> ZSIMD_TARGET_SCALAR_CPP14
