@@ -98,7 +98,7 @@ namespace zsimd {
     scalar::basic_bitset<T, B> scalar::to_bitset(scalar::basic_vector<T, B> v) noexcept {
         #ifdef __ZSIMD_BIT_CAST
         //with std::bit_cast, this will compile to a single mov instruction
-        return std::bit_cast<bitset<T, B>>(v.natve());
+        return std::bit_cast<basic_bitset<T, B>>(v.data());
         #else 
         basic_bitset<T, B> ret{0};
         for(std::size_t i = 0; i < basic_vector<T, B>::slots; ++i) {
@@ -127,8 +127,8 @@ namespace zsimd {
         #else
         basic_vector<To, B> ret = scalar::all_zeros<To, B>();
         std::memcpy(ret.data(), v.data(), sizeof(typename basic_vector<To, B>::data_type));
-        #endif
         return ret;
+        #endif
     }
 }
 
@@ -150,7 +150,7 @@ namespace zsimd {
     template<typename T, std::size_t B, enable_if<T, traits::integral>> ZSIMD_TARGET_SCALAR_CPP14
     scalar::basic_vector<T, B> scalar::slot_shiftl(basic_vector<T, B> v, std::size_t n_slots) noexcept {
         #ifdef __ZSIMD_BIT_CAST
-        basic_bitset<T, B> b = std::bit_cast<bitset<T, B>>(v.data());
+        basic_bitset<T, B> b = std::bit_cast<basic_bitset<T, B>>(v.data());
         b <<= n_slots * CHAR_BIT * sizeof(T);
         return std::bit_cast<basic_vector<T, B>>(b);
         #else
@@ -164,7 +164,7 @@ namespace zsimd {
     template<typename T, std::size_t B, enable_if<T, traits::integral>> ZSIMD_TARGET_SCALAR_CPP14
     scalar::basic_vector<T, B> scalar::slot_shiftr(basic_vector<T, B> v, std::size_t n_slots) noexcept {
         #ifdef __ZSIMD_BIT_CAST
-        basic_bitset<T, B> b = std::bit_cast<bitset<T, B>>(v.data());
+        basic_bitset<T, B> b = std::bit_cast<basic_bitset<T, B>>(v.data());
         b >>= n_slots * CHAR_BIT * sizeof(T);
         return std::bit_cast<basic_vector<T, B>>(b);
         #else
