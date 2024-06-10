@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.23)
 
+### zsimd ###
 project(zsimd VERSION 1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 11)
 
@@ -39,6 +40,46 @@ set(${PROJECT_NAME}_HEADER_FILES
 list(TRANSFORM ${PROJECT_NAME}_HEADER_FILES PREPEND "include/${PROJECT_NAME}/")
 target_sources(${PROJECT_NAME} PUBLIC FILE_SET ${PROJECT_NAME}_HEADERS TYPE HEADERS BASE_DIRS "include" FILES ${${PROJECT_NAME}_HEADER_FILES})
 
+## zstring ##
+set(ZSTRING_NAME zstring)
+
+
+add_library(${ZSTRING_NAME} INTERFACE)
+set_target_properties(${ZSTRING_NAME} PROPERTIES PUBLIC_HEADER 
+    "include/${ZSTRING_NAME}.hpp"
+)
+set(${ZSTRING_NAME}_HEADER_FILES
+    "manip/strcpy.hpp"
+    "manip/strncpy.hpp"
+    "manip/strcat.hpp"
+    "manip/strncat.hpp"
+    "manip/strxfrm.hpp"
+
+    "exam/strlen.hpp"
+    "exam/strcmp.hpp"
+    "exam/strncmp.hpp"
+    "exam/strcoll.hpp"
+    "exam/strchr.hpp"
+    "exam/strrchr.hpp"
+    "exam/strspn.hpp"
+    "exam/strcspn.hpp"
+    "exam/strpbrk.hpp"
+    "exam/strstr.hpp"
+    "exam/strtok.hpp"
+
+    "mem/memchr.hpp"
+    "mem/memrchr.hpp"
+    "mem/memcmp.hpp"
+    "mem/memset.hpp"
+    "mem/memcpy.hpp"
+    "mem/memmove.hpp"
+
+    "mem/mem_fn.hpp"
+)
+
+list(TRANSFORM ${ZSTRING_NAME}_HEADER_FILES PREPEND "include/${ZSTRING_NAME}/")
+target_sources(${ZSTRING_NAME} PUBLIC FILE_SET ${ZSTRING_NAME}_HEADERS TYPE HEADERS BASE_DIRS "include" FILES ${${ZSTRING_NAME}_HEADER_FILES})
+
 
 ### include directory ###
 cmake_path(SET SELF_INC_CMAKE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
@@ -48,3 +89,4 @@ message(STATUS "Including self directory: ${SELF_INC_DIR}")
 
 
 install(TARGETS ${PROJECT_NAME} FILE_SET ${PROJECT_NAME}_HEADERS)
+install(TARGETS ${ZSTRING_NAME} FILE_SET ${ZSTRING_NAME}_HEADERS)
