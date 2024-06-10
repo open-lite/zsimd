@@ -13,7 +13,11 @@ namespace zstring {
 
         if(count < N) return std::memmove(dest, src, count);
 
-        return zstring::memcpy(dest, src, count);
+        unsigned char* tmp = new unsigned char[count];
+        zstring::memcpy(tmp, src, count);
+        zstring::memcpy(dest, tmp, count);
+        delete[] tmp;
+        return dest;
     }
 }
 
