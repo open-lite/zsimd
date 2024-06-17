@@ -1,11 +1,15 @@
+#ifndef ZSTRING_STRCMP_H
+
+#ifndef ZSIMD_DUPLICATE_FOREACH
 #include "zstring/exam/strlen.hpp"
 #include "zstring/mem/memcmp.hpp"
 
-#if !defined(ZSTRING_STRCMP_H) || defined(ZSIMD_DUPLICATE_FOREACH)
-#define ZSTRING_STRCMP_H
 #define ZSIMD_SELF_INCLUDE_PATH "zstring/exam/strcmp.hpp"
 #include "zsimd/duplicate_foreach.h"
+#undef ZSIMD_SELF_INCLUDE_PATH
 
+#define ZSTRING_STRCMP_H
+#endif
 
 namespace zstring {
     ZSIMD_EXPAND inline
@@ -19,5 +23,4 @@ namespace zstring {
     }
 }
 
-#undef ZSIMD_SELF_INCLUDE_PATH
 #endif

@@ -1,10 +1,15 @@
+#ifndef ZSTRING_STRTOK_H
+
+#ifndef ZSIMD_DUPLICATE_FOREACH
 #include "zstring/exam/strspn.hpp"
 #include "zstring/exam/strcspn.hpp"
 
-#if !defined(ZSTRING_STRTOK_H) || defined(ZSIMD_DUPLICATE_FOREACH)
-#define ZSTRING_STRTOK_H
 #define ZSIMD_SELF_INCLUDE_PATH "zstring/exam/strtok.hpp"
 #include "zsimd/duplicate_foreach.h"
+#undef ZSIMD_SELF_INCLUDE_PATH
+
+#define ZSTRING_STRTOK_H
+#endif
 
 
 namespace zstring {
@@ -27,5 +32,4 @@ namespace zstring {
     }
 }
 
-#undef ZSIMD_SELF_INCLUDE_PATH
 #endif

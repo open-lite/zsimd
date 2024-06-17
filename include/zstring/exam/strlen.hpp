@@ -1,7 +1,13 @@
-#if !defined(ZSTRING_STRLEN_H) || defined(ZSIMD_DUPLICATE_FOREACH)
-#define ZSTRING_STRLEN_H
+#ifndef ZSTRING_STRLEN_H
+
+#ifndef ZSIMD_DUPLICATE_FOREACH
+
 #define ZSIMD_SELF_INCLUDE_PATH "zstring/exam/strlen.hpp"
 #include "zsimd/duplicate_foreach.h"
+#undef ZSIMD_SELF_INCLUDE_PATH
+
+#define ZSTRING_STRLEN_H
+#endif
 
 #include <cstring>
 #include <cstddef>
@@ -14,5 +20,4 @@ namespace zstring {
     }
 }
 
-#undef ZSIMD_SELF_INCLUDE_PATH
 #endif

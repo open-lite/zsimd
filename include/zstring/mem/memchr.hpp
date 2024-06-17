@@ -1,7 +1,13 @@
-#if !defined(ZSTRING_MEMCHR_H) || defined(ZSIMD_DUPLICATE_FOREACH)
-#define ZSTRING_MEMCHR_H
+#ifndef ZSTRING_MEMCHR_H
+
+#ifndef ZSIMD_DUPLICATE_FOREACH
+
 #define ZSIMD_SELF_INCLUDE_PATH "zstring/mem/memchr.hpp"
 #include "zsimd/duplicate_foreach.h"
+#undef ZSIMD_SELF_INCLUDE_PATH
+
+#define ZSTRING_MEMCHR_H
+#endif
 #include "zstring/mem/mem_fn.hpp"
 
 #include <cstring>
@@ -39,5 +45,4 @@ namespace zstring {
     }
 }
 
-#undef ZSIMD_SELF_INCLUDE_PATH
 #endif

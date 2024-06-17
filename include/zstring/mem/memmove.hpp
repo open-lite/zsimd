@@ -1,9 +1,15 @@
 #include "zstring/mem/memcpy.hpp"
 
-#if !defined(ZSTRING_MEMMOVE_H) || defined(ZSIMD_DUPLICATE_FOREACH)
-#define ZSTRING_MEMMOVE_H
+#ifndef ZSTRING_MEMMOVE_H
+
+#ifndef ZSIMD_DUPLICATE_FOREACH
+
 #define ZSIMD_SELF_INCLUDE_PATH "zstring/mem/memmove.hpp"
 #include "zsimd/duplicate_foreach.h"
+#undef ZSIMD_SELF_INCLUDE_PATH
+
+#define ZSTRING_MEMMOVE_H
+#endif
 
 
 namespace zstring {
@@ -21,5 +27,4 @@ namespace zstring {
     }
 }
 
-#undef ZSIMD_SELF_INCLUDE_PATH
 #endif

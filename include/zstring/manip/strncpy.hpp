@@ -1,11 +1,16 @@
+#ifndef ZSTRING_STRNCPY_H
+
+#ifndef ZSIMD_DUPLICATE_FOREACH
 #include "zstring/exam/strlen.hpp"
 #include "zstring/mem/memcpy.hpp"
 #include "zstring/mem/memset.hpp"
 
-#if !defined(ZSTRING_STRNCPY_H) || defined(ZSIMD_DUPLICATE_FOREACH)
-#define ZSTRING_STRNCPY_H
 #define ZSIMD_SELF_INCLUDE_PATH "zstring/manip/strncpy.hpp"
 #include "zsimd/duplicate_foreach.h"
+#undef ZSIMD_SELF_INCLUDE_PATH
+
+#define ZSTRING_STRNCPY_H
+#endif
 
 
 namespace zstring {
@@ -23,5 +28,4 @@ namespace zstring {
     }
 }
 
-#undef ZSIMD_SELF_INCLUDE_PATH
 #endif

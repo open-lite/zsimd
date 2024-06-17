@@ -1,9 +1,14 @@
+#ifndef ZSTRING_STRCSPN_H
+
+#ifndef ZSIMD_DUPLICATE_FOREACH
 #include "zstring/exam/strlen.hpp"
 
-#if !defined(ZSTRING_STRCSPN_H) || defined(ZSIMD_DUPLICATE_FOREACH)
-#define ZSTRING_STRCSPN_H
 #define ZSIMD_SELF_INCLUDE_PATH "zstring/exam/strcspn.hpp"
 #include "zsimd/duplicate_foreach.h"
+#undef ZSIMD_SELF_INCLUDE_PATH
+
+#define ZSTRING_STRCSPN_H
+#endif
 
 #include <cstring>
 
@@ -56,5 +61,4 @@ namespace zstring {
     }
 }
 
-#undef ZSIMD_SELF_INCLUDE_PATH
 #endif
