@@ -67,14 +67,18 @@ namespace zsimd {
 
     template<typename T, std::size_t B, enable_if<T, traits::integral>> ZSIMD_TARGET_SCALAR_CPP14
     bool scalar::is_all_ones(scalar::basic_vector<T, B> v) noexcept {
-        //with std::bit_cast, this will compile to just 2 instructions
-        return scalar::is_ones(scalar::to_bitset(v).to_ullong());
+        for(std::size_t i = 0; i < scalar::basic_vector<T, B>::blocks; ++i)
+            if(!scalar::is_ones(v.data()[i]))
+                return false;
+        return true;
     }
 
     template<typename T, std::size_t B, enable_if<T, traits::integral>> ZSIMD_TARGET_SCALAR_CPP14
     bool scalar::is_all_zeros(scalar::basic_vector<T, B> v) noexcept {
-        //with std::bit_cast, this will compile to just 2 instructions
-        return scalar::is_zeros(scalar::to_bitset(v).to_ullong());
+        for(std::size_t i = 0; i < scalar::basic_vector<T, B>::blocks; ++i)
+            if(!scalar::is_zeros(v.data()[i]))
+                return false;
+        return true;
     }
 }
 
