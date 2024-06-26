@@ -13,6 +13,7 @@
 
 
 namespace zstring {
+    //TODO create non-static version that returns all tokens at once (i.e. string split)
     ZSIMD_EXPAND inline
     char* strtok(char* str, const char* delim) {
         static char* buffer;
