@@ -104,9 +104,9 @@ namespace zsimd {
         //vector<cond<T>> bool_cast(basic_vector<T, B> v) noexcept;
 
 
-        template<typename T, std::size_t B = native_bits> ZSIMD_TARGET_SCALAR static
+        template<bool Inclusive, typename T, std::size_t B = native_bits> ZSIMD_TARGET_SCALAR static
         basic_mask<T, B> left_mask(std::size_t idx) noexcept;
-        template<typename T, std::size_t B = native_bits> ZSIMD_TARGET_SCALAR static
+        template<bool Inclusive, typename T, std::size_t B = native_bits> ZSIMD_TARGET_SCALAR static
         basic_mask<T, B> right_mask(std::size_t idx) noexcept;
 
 

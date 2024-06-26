@@ -134,14 +134,15 @@ namespace zsimd {
 
 
 namespace zsimd {
-    template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR
+    template<bool Inclusive, typename T, std::size_t B> ZSIMD_TARGET_SCALAR
     scalar::basic_mask<T, B> scalar::right_mask(std::size_t idx) noexcept {
-        return static_cast<basic_mask<T, B>>(~static_cast<basic_mask<T, B>>(0)) >> idx;
+        return static_cast<basic_mask<T, B>>(~static_cast<basic_mask<T, B>>(0)) >> (idx + !Inclusive);
     }
     
-    template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR
+    template<bool Inclusive, typename T, std::size_t B> ZSIMD_TARGET_SCALAR
     scalar::basic_mask<T, B> scalar::left_mask(std::size_t idx) noexcept {
-        return static_cast<basic_mask<T, B>>(~static_cast<basic_mask<T, B>>(0)) << ((sizeof(basic_mask<T, B>) * CHAR_BIT) - (idx + 1));
+        constexpr static std::size_t bits = sizeof(basic_mask<T, B>) * CHAR_BIT;
+        return static_cast<basic_mask<T, B>>(~static_cast<basic_mask<T, B>>(0)) << (bits - scalar::min(idx + Inclusive, bits));
     }
 }
 

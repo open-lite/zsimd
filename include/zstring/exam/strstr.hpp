@@ -41,7 +41,7 @@ namespace zstring {
                 std::size_t needle_idx = simd::countl_zero(needle_mask);
                 if(zstring::memcmp(haystack + i + needle_idx + 1, needle + 1, needle_len - 2) == 0)
                     return haystack + i + needle_idx;
-                needle_mask &= simd::right_mask<char>(needle_idx + 1);
+                needle_mask &= simd::right_mask<true, char>(needle_idx + 1);
             }
             return nullptr;
         };
