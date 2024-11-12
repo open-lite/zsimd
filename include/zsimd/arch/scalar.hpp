@@ -58,6 +58,9 @@ namespace zsimd {
         using array  = basic_array<T, native_bits>;
         template<typename T>
         using bitset = basic_bitset<T, native_bits>;
+    public:
+        template<std::size_t N>
+        using ideal_arch = scalar;
 
 
     public:
