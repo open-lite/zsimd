@@ -10,17 +10,29 @@
 
 #define ZSTRING_STRNCMP_H
 #endif
+#include "zstring/fn_traits.hpp"
 
 
 
 namespace zstring {
-    ZSIMD_EXPAND inline
-    int strncmp(const char* lhs, const char* rhs, std::size_t count, std::size_t str_len) {
+    ZSIMD_EXPAND __ZSTRING_CONSTEXPR_EVAL_FN
+    int strncmp(const char* lhs, const char* rhs, std::size_t count, std::size_t str_len) noexcept {
         return zstring::memcmp(lhs, rhs, std::min(count, str_len));
     }
 
-    ZSIMD_EXPAND inline
-    int strncmp(const char* lhs, const char* rhs, std::size_t count) {
+    ZSIMD_EXPAND __ZSTRING_CONSTEXPR_EVAL_FN
+    int strncmp(const char* lhs, const char* rhs, std::size_t count) noexcept {
+        return zstring::strncmp(lhs, rhs, count, zstring::strlen(lhs));
+    }
+
+
+    ZSIMD_EXPAND constexpr
+    int strncmp_constexpr(const char* lhs, const char* rhs, std::size_t count, std::size_t str_len) noexcept {
+        return zstring::memcmp(lhs, rhs, std::min(count, str_len));
+    }
+
+    ZSIMD_EXPAND constexpr
+    int strncmp_constexpr(const char* lhs, const char* rhs, std::size_t count) noexcept {
         return zstring::strncmp(lhs, rhs, count, zstring::strlen(lhs));
     }
 }

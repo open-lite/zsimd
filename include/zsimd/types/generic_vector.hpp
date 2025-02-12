@@ -6,12 +6,6 @@
 #include <type_traits>
 #include <array>
 
-#if __cpp_constexpr >= 201304L
-#define __ZSIMD_VECTOR_CONSTEXPR constexpr
-#else 
-#define __ZSIMD_VECTOR_CONSTEXPR inline
-#endif
-
 
 namespace zsimd {
     template<typename T, std::size_t B, typename ArchTy, 
@@ -53,7 +47,7 @@ namespace zsimd {
         //Aggregate member
         data_type _data;
 
-        __ZSIMD_VECTOR_CONSTEXPR data_type&       data()       noexcept { return _data; }
+        constexpr data_type&       data()       noexcept { return _data; }
         constexpr                data_type const& data() const noexcept { return _data; }
         constexpr explicit inline operator typename std::decay<data_type>::type() const noexcept { return _data; }
 
@@ -61,71 +55,71 @@ namespace zsimd {
  
         //Conversion
         template<typename U>
-        explicit __ZSIMD_VECTOR_CONSTEXPR operator generic_vector<U, B, ArchTy, SingleFloatVecTy, DoubleFloatVecTy, IntVecTy, UIntVecTy>() noexcept { 
+        explicit constexpr operator generic_vector<U, B, ArchTy, SingleFloatVecTy, DoubleFloatVecTy, IntVecTy, UIntVecTy>() noexcept { 
             return ArchTy::template type_cast<generic_vector<U, B, ArchTy, SingleFloatVecTy, DoubleFloatVecTy, IntVecTy, UIntVecTy>>(*this);
         }
 
 
         //Data Transfer/Store
-        explicit __ZSIMD_VECTOR_CONSTEXPR operator array_type()  const noexcept { return ArchTy::to_array(*this); }
-        explicit __ZSIMD_VECTOR_CONSTEXPR operator bitset_type() const noexcept { return ArchTy::to_bits (*this); }
-        explicit __ZSIMD_VECTOR_CONSTEXPR operator mask_type()   const noexcept { return ArchTy::to_mask (*this); }
+        explicit constexpr operator array_type()  const noexcept { return ArchTy::to_array(*this); }
+        explicit constexpr operator bitset_type() const noexcept { return ArchTy::to_bits (*this); }
+        explicit constexpr operator mask_type()   const noexcept { return ArchTy::to_mask (*this); }
 
 
 
         //Assignment
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector& operator += (const generic_vector& v) noexcept { *this = ArchTy::add(*this, v); return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector& operator -= (const generic_vector& v) noexcept { *this = ArchTy::sub(*this, v); return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector& operator *= (const generic_vector& v) noexcept { *this = ArchTy::mul(*this, v); return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector& operator /= (const generic_vector& v) noexcept { *this = ArchTy::div(*this, v); return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector& operator %= (const generic_vector& v) noexcept { *this = ArchTy::mod(*this, v); return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector& operator &= (const generic_vector& v) noexcept { *this = ArchTy::bitwise_and(*this, v); return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector& operator |= (const generic_vector& v) noexcept { *this = ArchTy::bitwise_or (*this, v); return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector& operator ^= (const generic_vector& v) noexcept { *this = ArchTy::bitwise_xor(*this, v); return *this; }
+        constexpr generic_vector& operator += (const generic_vector& v) noexcept { *this = ArchTy::add(*this, v); return *this; }
+        constexpr generic_vector& operator -= (const generic_vector& v) noexcept { *this = ArchTy::sub(*this, v); return *this; }
+        constexpr generic_vector& operator *= (const generic_vector& v) noexcept { *this = ArchTy::mul(*this, v); return *this; }
+        constexpr generic_vector& operator /= (const generic_vector& v) noexcept { *this = ArchTy::div(*this, v); return *this; }
+        constexpr generic_vector& operator %= (const generic_vector& v) noexcept { *this = ArchTy::mod(*this, v); return *this; }
+        constexpr generic_vector& operator &= (const generic_vector& v) noexcept { *this = ArchTy::bitwise_and(*this, v); return *this; }
+        constexpr generic_vector& operator |= (const generic_vector& v) noexcept { *this = ArchTy::bitwise_or (*this, v); return *this; }
+        constexpr generic_vector& operator ^= (const generic_vector& v) noexcept { *this = ArchTy::bitwise_xor(*this, v); return *this; }
 
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector& operator <<=(int shift) noexcept { *this = ArchTy::bit_shiftl(*this, shift); return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector& operator >>=(int shift) noexcept { *this = ArchTy::bit_shiftr(*this, shift); return *this; }
+        constexpr generic_vector& operator <<=(int shift) noexcept { *this = ArchTy::bit_shiftl(*this, shift); return *this; }
+        constexpr generic_vector& operator >>=(int shift) noexcept { *this = ArchTy::bit_shiftr(*this, shift); return *this; }
 
 
         //Increment/Decrement
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector& operator++() noexcept { *this = ArchTy::incr(*this); return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector& operator--() noexcept { *this = ArchTy::decr(*this); return *this; }
+        constexpr generic_vector& operator++() noexcept { *this = ArchTy::incr(*this); return *this; }
+        constexpr generic_vector& operator--() noexcept { *this = ArchTy::decr(*this); return *this; }
 
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator++(int) noexcept { generic_vector old = *this; operator++(); return old; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator--(int) noexcept { generic_vector old = *this; operator--(); return old; }
+        constexpr generic_vector operator++(int) noexcept { generic_vector old = *this; operator++(); return old; }
+        constexpr generic_vector operator--(int) noexcept { generic_vector old = *this; operator--(); return old; }
 
 
         //Arithmetic
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator+ () noexcept { *this = ArchTy::positive   (*this); return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator- () noexcept { *this = ArchTy::negative   (*this); return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator~ () noexcept { *this = ArchTy::bitwise_not(*this); return *this; } 
+        constexpr generic_vector operator+ () noexcept { *this = ArchTy::positive   (*this); return *this; }
+        constexpr generic_vector operator- () noexcept { *this = ArchTy::negative   (*this); return *this; }
+        constexpr generic_vector operator~ () noexcept { *this = ArchTy::bitwise_not(*this); return *this; } 
 
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator+ (const generic_vector& v) noexcept { *this += v; return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator- (const generic_vector& v) noexcept { *this -= v; return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator* (const generic_vector& v) noexcept { *this *= v; return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator/ (const generic_vector& v) noexcept { *this /= v; return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator% (const generic_vector& v) noexcept { *this &= v; return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator& (const generic_vector& v) noexcept { *this &= v; return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator| (const generic_vector& v) noexcept { *this |= v; return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator^ (const generic_vector& v) noexcept { *this ^= v; return *this; }
+        constexpr generic_vector operator+ (const generic_vector& v) noexcept { *this += v; return *this; }
+        constexpr generic_vector operator- (const generic_vector& v) noexcept { *this -= v; return *this; }
+        constexpr generic_vector operator* (const generic_vector& v) noexcept { *this *= v; return *this; }
+        constexpr generic_vector operator/ (const generic_vector& v) noexcept { *this /= v; return *this; }
+        constexpr generic_vector operator% (const generic_vector& v) noexcept { *this &= v; return *this; }
+        constexpr generic_vector operator& (const generic_vector& v) noexcept { *this &= v; return *this; }
+        constexpr generic_vector operator| (const generic_vector& v) noexcept { *this |= v; return *this; }
+        constexpr generic_vector operator^ (const generic_vector& v) noexcept { *this ^= v; return *this; }
 
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator<<(int shift) noexcept { *this <<= shift; return *this; }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator>>(int shift) noexcept { *this >>= shift; return *this; }
+        constexpr generic_vector operator<<(int shift) noexcept { *this <<= shift; return *this; }
+        constexpr generic_vector operator>>(int shift) noexcept { *this >>= shift; return *this; }
 
 
         //Logical
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator! ()                      noexcept { return ArchTy::logical_not(*this);    }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator||(const generic_vector& v) noexcept { return ArchTy::logical_or (*this, v); }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator&&(const generic_vector& v) noexcept { return ArchTy::logical_and(*this, v); }
+        constexpr generic_vector operator! ()                      noexcept { return ArchTy::logical_not(*this);    }
+        constexpr generic_vector operator||(const generic_vector& v) noexcept { return ArchTy::logical_or (*this, v); }
+        constexpr generic_vector operator&&(const generic_vector& v) noexcept { return ArchTy::logical_and(*this, v); }
 
 
         //Comparison
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator==(const generic_vector& v) noexcept { return ArchTy::eq (*this, v); }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator!=(const generic_vector& v) noexcept { return ArchTy::neq(*this, v); }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator< (const generic_vector& v) noexcept { return ArchTy::lt (*this, v); }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator> (const generic_vector& v) noexcept { return ArchTy::gt (*this, v); }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator<=(const generic_vector& v) noexcept { return ArchTy::leq(*this, v); }
-        __ZSIMD_VECTOR_CONSTEXPR generic_vector operator>=(const generic_vector& v) noexcept { return ArchTy::geq(*this, v); }
+        constexpr generic_vector operator==(const generic_vector& v) noexcept { return ArchTy::eq (*this, v); }
+        constexpr generic_vector operator!=(const generic_vector& v) noexcept { return ArchTy::neq(*this, v); }
+        constexpr generic_vector operator< (const generic_vector& v) noexcept { return ArchTy::lt (*this, v); }
+        constexpr generic_vector operator> (const generic_vector& v) noexcept { return ArchTy::gt (*this, v); }
+        constexpr generic_vector operator<=(const generic_vector& v) noexcept { return ArchTy::leq(*this, v); }
+        constexpr generic_vector operator>=(const generic_vector& v) noexcept { return ArchTy::geq(*this, v); }
     };
 }
 

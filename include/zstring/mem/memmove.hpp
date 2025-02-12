@@ -1,8 +1,7 @@
-#include "zstring/mem/memcpy.hpp"
-
 #ifndef ZSTRING_MEMMOVE_H
 
 #ifndef ZSIMD_DUPLICATE_FOREACH
+#include "zstring/mem/memcpy.hpp"
 
 #define ZSIMD_SELF_INCLUDE_PATH "zstring/mem/memmove.hpp"
 #include "zsimd/duplicate_foreach.h"
@@ -10,21 +9,23 @@
 
 #define ZSTRING_MEMMOVE_H
 #endif
+#include "zstring/fn_traits.hpp"
 
 
 namespace zstring {
-    ZSIMD_EXPAND inline
-    void* memmove(void* dest, const void* src, std::size_t count) {
-        constexpr static std::size_t N = zsimd::ZSIMD_ARCH::vector<unsigned char>::data_size;
-
-        if(count < N) return std::memmove(dest, src, count);
-
-        unsigned char* tmp = new unsigned char[count];
+    ZSIMD_EXPAND __ZSTRING_CONSTEXPR_EVAL_FN
+    narrow_type* memmove(narrow_type* dest, const narrow_type* src, std::size_t count) noexcept {
+        if(dest == src || count == 0) return dest;
+        narrow_type* tmp = new narrow_type[count];
         zstring::memcpy(tmp, src, count);
         zstring::memcpy(dest, tmp, count);
         delete[] tmp;
         return dest;
     }
+
+    //naive constexpr version of memmove is possible but has much more complex implemntation than just dma and memcpy
+    //ZSIMD_EXPAND constexpr
+    //void* memcpy_constexpr(void* dest, const void* src, std::size_t count) noexcept;
 }
 
 #endif

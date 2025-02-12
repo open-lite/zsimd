@@ -110,7 +110,7 @@ namespace zsimd {
 
 
 namespace zsimd {
-    template<typename T, enable_if<T, traits::unsigned_num, traits::integral>> ZSIMD_TARGET_SCALAR_CPP14
+    template<typename T, enable_if<T, traits::unsigned_num, traits::integral>> ZSIMD_TARGET_SCALAR
     std::uint8_t scalar::countl_zero(T val) noexcept {
         #if   defined(__ZSIMD_BITOPS)
         return std::countl_zero(val);
@@ -121,7 +121,7 @@ namespace zsimd {
         #endif
     }
 
-    template<typename T, enable_if<T, traits::unsigned_num, traits::integral>> ZSIMD_TARGET_SCALAR_CPP14
+    template<typename T, enable_if<T, traits::unsigned_num, traits::integral>> ZSIMD_TARGET_SCALAR
     std::uint8_t scalar::countr_zero(T val) noexcept {
         #if   defined(__ZSIMD_BITOPS)
         return std::countr_zero(val);
@@ -133,7 +133,7 @@ namespace zsimd {
     }
 
 
-    template<typename T, enable_if<T, traits::unsigned_num, traits::integral>> ZSIMD_TARGET_SCALAR_CPP14
+    template<typename T, enable_if<T, traits::unsigned_num, traits::integral>> ZSIMD_TARGET_SCALAR
     std::uint8_t scalar::countl_one(T val) noexcept {
         #if   defined(__ZSIMD_BITOPS)
         return std::countl_one(val);
@@ -144,7 +144,7 @@ namespace zsimd {
         #endif
     }
 
-    template<typename T, enable_if<T, traits::unsigned_num, traits::integral>> ZSIMD_TARGET_SCALAR_CPP14
+    template<typename T, enable_if<T, traits::unsigned_num, traits::integral>> ZSIMD_TARGET_SCALAR
     std::uint8_t scalar::countr_one(T val) noexcept {
         #if   defined(__ZSIMD_BITOPS)
         return std::countr_one(val);
@@ -156,7 +156,7 @@ namespace zsimd {
     }
 
 
-    template<typename T, enable_if<T, traits::unsigned_num, traits::integral>> ZSIMD_TARGET_SCALAR_CPP14
+    template<typename T, enable_if<T, traits::unsigned_num, traits::integral>> ZSIMD_TARGET_SCALAR
     std::uint8_t scalar::popcount(T val) noexcept {
         #if   defined(__ZSIMD_BITOPS)
         return std::popcount(val);

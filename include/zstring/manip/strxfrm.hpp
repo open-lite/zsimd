@@ -14,7 +14,7 @@
 
 namespace zstring {
     ZSIMD_EXPAND inline
-    std::size_t strxfrm(char* dest, const char* src, std::size_t count) {
+    std::size_t strxfrm(char* dest, const char* src, std::size_t count) noexcept {
         return std::strxfrm(dest, src, count);
     }
 }

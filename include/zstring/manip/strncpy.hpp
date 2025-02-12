@@ -14,17 +14,31 @@
 
 
 namespace zstring {
-    ZSIMD_EXPAND inline
-    char* strncpy(char* dest, const char* src, std::size_t count, std::size_t src_len) {
+    ZSIMD_EXPAND __ZSTRING_CONSTEXPR_EVAL_FN
+    char* strncpy(char* dest, const char* src, std::size_t count, std::size_t src_len) noexcept {
         if(count < src_len) return static_cast<char*>(zstring::memcpy(dest, src, count));
         zstring::memcpy(dest, src, src_len);
         zstring::memset(dest + src_len, 0, count - src_len);
         return dest;
     }
 
-    ZSIMD_EXPAND inline
-    char* strncpy(char* dest, const char* src, std::size_t count) {
+    ZSIMD_EXPAND __ZSTRING_CONSTEXPR_EVAL_FN
+    char* strncpy(char* dest, const char* src, std::size_t count) noexcept {
         return zstring::strncpy(dest, src, count, zstring::strlen(src));
+    }
+
+
+    ZSIMD_EXPAND constexpr
+    char* strncpy_constexpr(char* dest, const char* src, std::size_t count, std::size_t src_len) noexcept {
+        if(count < src_len) return static_cast<char*>(zstring::memcpy_constexpr(dest, src, count));
+        zstring::memcpy_constexpr(dest, src, src_len);
+        zstring::memset_constexpr(dest + src_len, 0, count - src_len);
+        return dest;
+    }
+
+    ZSIMD_EXPAND constexpr
+    char* strncpy_constexpr(char* dest, const char* src, std::size_t count) noexcept {
+        return zstring::strncpy_constexpr(dest, src, count, zstring::strlen(src));
     }
 }
 

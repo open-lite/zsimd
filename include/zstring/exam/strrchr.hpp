@@ -10,28 +10,52 @@
 
 #define ZSTRING_STRRCHR_H
 #endif
+#include "zstring/fn_traits.hpp"
 
 
 namespace zstring {
-    ZSIMD_EXPAND inline
-    const char* strrchr(const char* str, int ch, std::size_t str_len) {
-        return static_cast<const char*>(zstring::memrchr(str, ch, str_len));
+    ZSIMD_EXPAND __ZSTRING_CONSTEXPR_EVAL_FN
+    const char* strrchr(const char* str, int ch, std::size_t str_len) noexcept {
+        return static_cast<narrow_type const*>(zstring::memrchr(str, ch, str_len));
     }
 
-    ZSIMD_EXPAND inline
-    const char* strrchr(const char* str, int ch) {
+    ZSIMD_EXPAND __ZSTRING_CONSTEXPR_EVAL_FN
+    const char* strrchr(const char* str, int ch) noexcept {
         return zstring::strrchr(str, ch, zstring::strlen(str) + 1);
     }
 
 
-    ZSIMD_EXPAND inline
-    char* strrchr(char* str, int ch, std::size_t str_len) {
-        return const_cast<char*>(zstring::strrchr(static_cast<const char*>(str), ch, str_len));
+    ZSIMD_EXPAND __ZSTRING_CONSTEXPR_EVAL_FN
+    char* strrchr(char* str, int ch, std::size_t str_len) noexcept {
+        return const_cast<narrow_type*>(zstring::strrchr(static_cast<narrow_type const*>(str), ch, str_len));
     }
 
-    ZSIMD_EXPAND inline
-    char* strrchr(char* str, int ch) {
-        return const_cast<char*>(zstring::strrchr(static_cast<const char*>(str), ch));
+    ZSIMD_EXPAND __ZSTRING_CONSTEXPR_EVAL_FN
+    char* strrchr(char* str, int ch) noexcept {
+        return const_cast<narrow_type*>(zstring::strrchr(static_cast<narrow_type const*>(str), ch));
+    }
+}
+
+namespace zstring { 
+    ZSIMD_EXPAND constexpr
+    const char* strrchr_constexpr(const char* str, int ch, std::size_t str_len) noexcept { 
+        return static_cast<narrow_type const*>(zstring::memrchr_constexpr(str, ch, str_len));
+    }
+
+    ZSIMD_EXPAND constexpr
+    const char* strrchr_constexpr(const char* str, int ch) noexcept {
+        return zstring::strrchr(str, ch, zstring::strlen(str) + 1);
+    }
+
+
+    ZSIMD_EXPAND constexpr
+    char* strrchr_constexpr(char* str, int ch, std::size_t str_len) noexcept {
+        return const_cast<narrow_type*>(zstring::strrchr_constexpr(static_cast<narrow_type const*>(str), ch, str_len));
+    }
+
+    ZSIMD_EXPAND constexpr
+    char* strrchr_constexpr(char* str, int ch) noexcept {
+        return const_cast<narrow_type*>(zstring::strrchr_constexpr(static_cast<narrow_type const*>(str), ch));
     }
 }
 

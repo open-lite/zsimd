@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.23)
 
 ### zsimd ###
 project(zsimd VERSION 1.0 LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 
 add_library(${PROJECT_NAME} INTERFACE)
@@ -49,6 +49,9 @@ set_target_properties(${ZSTRING_NAME} PROPERTIES PUBLIC_HEADER
     "include/${ZSTRING_NAME}.hpp"
 )
 set(${ZSTRING_NAME}_HEADER_FILES
+    "fn_traits.hpp"
+    "simd_fn.hpp"
+
     "manip/strcpy.hpp"
     "manip/strncpy.hpp"
     "manip/strcat.hpp"
@@ -73,8 +76,6 @@ set(${ZSTRING_NAME}_HEADER_FILES
     "mem/memset.hpp"
     "mem/memcpy.hpp"
     "mem/memmove.hpp"
-
-    "mem/mem_fn.hpp"
 )
 
 list(TRANSFORM ${ZSTRING_NAME}_HEADER_FILES PREPEND "include/${ZSTRING_NAME}/")

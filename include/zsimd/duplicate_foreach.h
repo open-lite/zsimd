@@ -5,6 +5,7 @@
 
 #undef ZSIMD_ARCH_TARGET
 #define ZSIMD_ARCH_TARGET ZSIMD_ARCH
+#define ZSIMD_NO_DUPLICATION
 #define __ZSIMD_EXPAND_FILE "zsimd/attrib/expand.h"
 
 
@@ -97,6 +98,7 @@
 /** Scalar **/
 #undef ZSIMD_ARCH
 #undef ZSIMD_ARCH_TARGET
+#undef ZSIMD_NO_DUPLICATION
 #include __ZSIMD_EXPAND_FILE
 
 

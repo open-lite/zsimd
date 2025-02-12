@@ -3,7 +3,7 @@
 
 
 namespace zsimd {
-    template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR_CPP14
+    template<typename T, std::size_t B> ZSIMD_TARGET_SCALAR
     scalar::basic_vector<T, B> scalar::abs(scalar::basic_vector<T, B> v) noexcept {
         return scalar::per_slot<T, B>(scalar::abs, v);    
     }

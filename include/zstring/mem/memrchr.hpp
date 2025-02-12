@@ -8,65 +8,85 @@
 
 #define ZSTRING_MEMRCHR_H
 #endif
+#include "zstring/simd_fn.hpp"
+#include "zstring/fn_traits.hpp"
 
 #include <cstring>
+
+
+#if defined(__has_builtin) && !defined(ZSTRING_NO_BUILTINS)
+#if __has_builtin (__builtin_char_memrchr)
+#define __ZSTRING_BUILTIN_MEMRCHR 1
+#endif
+#endif
 
 
 namespace zstring {
 namespace impl {
     ZSIMD_EXPAND inline
-    const void* memrchr(const void* ptr, int ch, std::size_t i, std::size_t N) {
-        using uchar = unsigned char;
+    const narrow_type* vectorwise_memrchr(const narrow_type* ptr, int ch, std::size_t i, std::size_t N) noexcept {
         using simd = zsimd::ZSIMD_ARCH;
-        using vector = simd::vector<uchar>;
+        using vector = simd::vector<narrow_type>;
 
-        vector cmp = simd::eq(simd::loadu(static_cast<const uchar*>(ptr) + i), simd::broadcast<uchar>(ch));
+        vector cmp = simd::eq(simd::loadu(reinterpret_cast<const narrow_type*>(ptr) + i), simd::broadcast<narrow_type>(ch));
         if(simd::is_all_zeros(cmp)) return nullptr;
         std::size_t idx = simd::countr_zero(simd::to_mask(cmp));
-        return static_cast<const uchar*>(ptr) + i + N - idx - 1;
+        return ptr + i + N - idx - 1;
     }
 }
 }
+
 
 namespace zstring {
-    ZSIMD_EXPAND inline
-    const void* memrchr(const void* ptr, int ch, std::size_t count ) {
-        using uchar = unsigned char;
-        constexpr static std::size_t N = zsimd::ZSIMD_ARCH::vector<uchar>::data_size;
-
-        if(count >= N) goto simd_memrchr;
-        
-        {
-        std::size_t i = count;
-        while(i != 0){
-            --i;
-            if(static_cast<const uchar*>(ptr)[i] == static_cast<uchar>(ch))
-                return static_cast<const uchar*>(ptr) + i;
-        }
+namespace impl {
+    ZSIMD_EXPAND constexpr
+    const narrow_type* naive_memrchr(const narrow_type* ptr, int ch, std::size_t count) noexcept {
+        #ifdef __ZSTRING_BUILTIN_MEMRCHR
+        return __builtin_char_memrchr(ptr, ch, count);
+        #else 
+        if(count == 0) return nullptr;
+        std::size_t i = count - 1;
+        narrow_type const* p = ptr;
+        do {
+            if(p[i] == static_cast<narrow_type>(ch))
+                return p + i;
+        } while(i-- > 0);
         return nullptr;
-        }
+        #endif
+    }
 
-        //TODO add support for if count < N but > a smaller vector size
+    ZSIMD_EXPAND inline
+    const narrow_type* simd_memrchr(const narrow_type* ptr, int ch, std::size_t count) noexcept {
+        return impl::rsimd_fn<zsimd::ZSIMD_ARCH, narrow_type>(naive_memrchr, zstring::impl::vectorwise_memrchr, count, static_cast<const narrow_type*>(nullptr), ptr, ch);
+    }
+}
+}
 
-        simd_memrchr:
-        {
-        std::size_t i = count;
-        while(i >= N){
-            i -= N;
-            const void* ret = zstring::impl::memrchr(ptr, ch, i, N);
-            if(ret == nullptr) continue;
-            return ret;
-        }
-        if (i == 0) return nullptr;
-        }
 
-        return zstring::impl::memrchr(ptr, ch, 0, N);
+namespace zstring {
+    ZSIMD_EXPAND __ZSTRING_CONSTEXPR_EVAL_FN
+    const narrow_type* memrchr(const narrow_type* ptr, int ch, std::size_t count) {
+        if(__ZSTRING_IS_CONSTEXPR_EVAL(false))
+            return zstring::impl::naive_memrchr(ptr, ch, count);
+        return zstring::impl::simd_memrchr(ptr, ch, count);
+    }
+
+    ZSIMD_EXPAND __ZSTRING_CONSTEXPR_EVAL_FN
+    narrow_type* memrchr(narrow_type* ptr, int ch, std::size_t count) {
+        return const_cast<narrow_type*>(memrchr(static_cast<const narrow_type*>(ptr), ch, count));
     }
 
 
-    ZSIMD_EXPAND inline
-    void* memrchr(void* ptr, int ch, std::size_t count ) {
-        return const_cast<void*>(memrchr(static_cast<const void*>(ptr), ch, count));
+    ZSIMD_EXPAND constexpr
+    const narrow_type* memrchr_constexpr(const narrow_type* ptr, int ch, std::size_t count) {
+        if(__ZSTRING_IS_CONSTEXPR_EVAL(true))
+            return zstring::impl::naive_memrchr(ptr, ch, count);
+        return zstring::impl::simd_memrchr(ptr, ch, count);
+    }
+
+    ZSIMD_EXPAND constexpr
+    narrow_type* memrchr_constexpr(narrow_type* ptr, int ch, std::size_t count) {
+        return const_cast<narrow_type*>(memrchr_constexpr(static_cast<const narrow_type*>(ptr), ch, count));
     }
 }
 

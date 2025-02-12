@@ -13,9 +13,9 @@
 
 
 namespace zstring {
-    //TODO create non-static version that returns all tokens at once (i.e. string split)
+    //TODO create non-static version that returns all tokens at once (i.e. string split)?
     ZSIMD_EXPAND inline
-    char* strtok(char* str, const char* delim) {
+    char* strtok(char* str, const char* delim) noexcept {
         static char* buffer;
     
         if (str) buffer = str;
@@ -31,6 +31,11 @@ namespace zstring {
         
         return begin;
     }
+
+
+    //TODO create constexpr version (can't use static variable in constexpr function before c++23)
+    //ZSIMD_EXPAND constexpr
+    //char* strtok_constexpr(char* str, const char* delim) noexcept;
 }
 
 #endif

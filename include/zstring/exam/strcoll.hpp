@@ -14,7 +14,7 @@
 
 namespace zstring {
     ZSIMD_EXPAND inline
-    int strcoll(const char* lhs, const char* rhs) {
+    int strcoll(const char* lhs, const char* rhs) noexcept {
         return std::strcoll(lhs, rhs);
     }
 }
