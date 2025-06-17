@@ -20,8 +20,8 @@ namespace zsimd {
 namespace impl {
     template<typename T> ZSIMD_TARGET_SCALAR 
     T scalar_sadd_s(T a, T b) noexcept {
-        constexpr static T min = std::numeric_limits<T>::min();
-        constexpr static T max = std::numeric_limits<T>::max();
+        constexpr T min = std::numeric_limits<T>::min();
+        constexpr T max = std::numeric_limits<T>::max();
         return a < 0 ? (b < min - a ? min : a + b) : (b > max - a ? max : a + b);
     }
 
@@ -32,8 +32,8 @@ namespace impl {
 
     template<typename T> ZSIMD_TARGET_SCALAR 
     T scalar_smul_s(T a, T b) noexcept {
-        constexpr static T min = std::numeric_limits<T>::min();
-        constexpr static T max = std::numeric_limits<T>::max();
+        constexpr T min = std::numeric_limits<T>::min();
+        constexpr T max = std::numeric_limits<T>::max();
         return 
             a > max / b ? max :
             a < min / b ? min :

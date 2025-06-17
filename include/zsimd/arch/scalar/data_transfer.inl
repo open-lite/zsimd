@@ -141,7 +141,7 @@ namespace zsimd {
     
     template<bool Inclusive, typename T, std::size_t B> ZSIMD_TARGET_SCALAR
     scalar::basic_mask<T, B> scalar::left_mask(std::size_t idx) noexcept {
-        constexpr static std::size_t bits = sizeof(basic_mask<T, B>) * CHAR_BIT;
+        constexpr std::size_t bits = sizeof(basic_mask<T, B>) * CHAR_BIT;
         return static_cast<basic_mask<T, B>>(~static_cast<basic_mask<T, B>>(0)) << (bits - scalar::min(idx + Inclusive, bits));
     }
 }
