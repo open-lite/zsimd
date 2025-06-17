@@ -44,10 +44,10 @@ namespace impl {
         #ifdef __ZSTRING_BUILTIN_MEMCHR
         return __builtin_char_memchr(ptr, ch, count);
         #else 
-        if(count == 0) return dest;
+        if(count == 0) return nullptr;
         narrow_type const* p = ptr;
         for (std::size_t i = 0; i < count; ++i)
-            if(p[i] == static_cast<narrow_type>(c))
+            if(p[i] == static_cast<narrow_type>(ch))
                 return p + i;
         return nullptr;
         #endif
